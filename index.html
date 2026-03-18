@@ -20,7 +20,7 @@
     }
 
     .logo {
-      width: 120px;
+      width: 85px;
       display: block;
       margin: 0 auto 12px auto;
       border-radius: 16px;
@@ -44,10 +44,10 @@
 
     .mini-imagen {
       width: 100%;
-      max-width: 220px;
+      max-width: 170px;
       border-radius: 14px;
       display: block;
-      margin: 10px 0 14px 0;
+      margin: 10px auto 14px auto;
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
     }
 
@@ -143,10 +143,21 @@
       color: #4f7393;
       font-size: 15px;
     }
+
+    @media (min-width: 768px) {
+      .logo {
+        width: 100px;
+      }
+
+      .mini-imagen {
+        max-width: 190px;
+      }
+    }
   </style>
 </head>
 <body>
-    <img src="logo.jpg" class="logo.jpg" alt="logo.jpg">
+  <div class="contenedor">
+    <img src="logo.jpg" class="logo" alt="Logo Lo del Doro">
 
     <h2 class="titulo">🍝 Lo del Doro</h2>
     <p class="subtitulo">Pastas caseras hechas en el día</p>
@@ -159,11 +170,11 @@
       <h3>Sorrentinos</h3>
 
       <div class="producto">
-        <span>Ricota y espinaca </span>
+        <span>Ricota y espinaca</span>
         <strong>$11.000</strong>
       </div>
 
-      <img src="sorrentinos de espinaca 2.jpg"  alt="Sorrentinos de espinaca 2">
+      <img src="sorrentinos de espinaca 2.jpg" class="mini-imagen" alt="Sorrentinos de ricota y espinaca">
 
       <input type="number" id="s1" value="0" min="0">
 
@@ -172,7 +183,7 @@
         <strong>$12.000</strong>
       </div>
 
-      <img src="photo.jpg"  alt="photo">
+      <img src="photo.jpg" class="mini-imagen" alt="Sorrentinos de pollo">
 
       <input type="number" id="s2" value="0" min="0">
     </div>
@@ -229,3 +240,62 @@
 
       document.getElementById("total").innerText = `Total: $${total.toLocaleString("es-AR")}`;
     }
+
+    function actualizarEntrega() {
+      const envio = document.getElementById("envio").value;
+      const campoDireccion = document.getElementById("campoDireccion");
+
+      if (envio === "Envio") {
+        campoDireccion.classList.remove("oculto");
+      } else {
+        campoDireccion.classList.add("oculto");
+      }
+
+      calcularTotal();
+    }
+
+    function enviarPedido() {
+      const s1 = parseInt(document.getElementById("s1").value) || 0;
+      const s2 = parseInt(document.getElementById("s2").value) || 0;
+      const f1 = parseInt(document.getElementById("f1").value) || 0;
+      const envio = document.getElementById("envio").value;
+      const direccion = document.getElementById("direccion").value.trim();
+
+      if (s1 === 0 && s2 === 0 && f1 === 0) {
+        alert("Por favor elegí al menos un producto");
+        return;
+      }
+
+      if (envio === "Envio" && direccion === "") {
+        alert("Por favor escribí tu dirección");
+        return;
+      }
+
+      let total = (s1 * 11000) + (s2 * 12000) + (f1 * 8000);
+      let mensaje = "Hola! Quiero hacer este pedido:%0A%0A";
+
+      if (s1 > 0) mensaje += `- ${s1} x Sorrentinos Ricota y espinaca%0A`;
+      if (s2 > 0) mensaje += `- ${s2} x Sorrentinos de Pollo%0A`;
+      if (f1 > 0) mensaje += `- ${f1} x Fideos caseros%0A`;
+
+      mensaje += `%0AEntrega: ${envio}%0A`;
+
+      if (envio === "Envio") {
+        total += 3000;
+        mensaje += `Dirección: ${encodeURIComponent(direccion)}%0A`;
+      }
+
+      mensaje += `%0ATotal: $${total.toLocaleString("es-AR")}`;
+
+      window.open(`https://wa.me/${MI_WHATSAPP}?text=${mensaje}`, "_blank");
+    }
+
+    document.getElementById("s1").addEventListener("input", calcularTotal);
+    document.getElementById("s2").addEventListener("input", calcularTotal);
+    document.getElementById("f1").addEventListener("input", calcularTotal);
+    document.getElementById("envio").addEventListener("change", actualizarEntrega);
+
+    calcularTotal();
+  </script>
+</body>
+</html>
